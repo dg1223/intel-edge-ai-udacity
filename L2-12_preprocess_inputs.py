@@ -18,24 +18,16 @@ def reshape_img(image, height, width):
                   --> if H = 256, W = 456
     '''
     
-    b = image[:,:,0]
-    g = image[:,:,1]
-    r = image[:,:,2]
-    
-    channel_first = np.array([ [b], [g], [r] ]) #shape: CxBxHxW
-    
-    #height = image.shape[0]
-    #width = image.shape[1]
-    
-    # resize image because openCV messes things up...sadly
+    # resize image to desired width and height
+    # get width before height because OpenCV messes things up...sadly
     image = cv2.resize(image, (width, height) )
     
-    # transpose image to place channel as the first dimension
+    # transpose image to make channel the first dimension
     image = image.transpose((2,0,1))
     
     # reshape image as BxCxHxW
+    # batch size is 1 because we are dealing with a single image
     image = image.reshape(1, image.shape[0], height, width)
-    #print('my image shape: {}'.format(image.shape))
     
     return image
     
@@ -51,8 +43,6 @@ def pose_estimation(input_image):
 
     # TODO: Preprocess the image for the pose estimation model
     preprocessed_image = reshape_img(input_image, 256, 456)
-    
-    #preprocessed_image = cv2.resize(preprocessed_image, (256, 456))
 
     return preprocessed_image
 
